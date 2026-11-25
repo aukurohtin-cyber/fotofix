@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f6f5c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Фотофиксация обследования</title>
+<style>
+:root{--bg:#f4f6f5;--card:#fff;--ink:#17201d;--mut:#5d6a66;--line:#d8dfdc;--acc:#1f6f5c;--accbg:#e2f1ec;--bad:#b3261e;--r:12px}
+@media (prefers-color-scheme:dark){:root{--bg:#111614;--card:#1b2220;--ink:#e8eeec;--mut:#9aa8a3;--line:#2f3a37;--acc:#4fbf9f;--accbg:#1d3a32}}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+button,input,textarea,select{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:var(--acc);color:#fff;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;display:flex;align-items:center;gap:8px}
+header .on{flex:1;min-width:0;background:none;border:0;color:#fff;text-align:left;padding:4px 0}
+header .on b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}header .on small{opacity:.85}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:8px 2px 10px;font-size:12px;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:2px}nav button.on{color:var(--acc);font-weight:600}nav svg{width:24px;height:24px}
+main{padding:12px 12px 96px;max-width:760px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:12px}
+h2{font-size:18px;margin:4px 0 10px}h3{font-size:15px;margin:0 0 8px;color:var(--mut);font-weight:600}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:10px}.big button{border:0;border-radius:16px;padding:22px 8px;background:var(--acc);color:#fff;font-size:17px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:6px}
+.big button.alt{background:var(--card);color:var(--acc);border:2px solid var(--acc)}.big svg{width:36px;height:36px}
+.btn{border:0;border-radius:10px;padding:12px 16px;background:var(--acc);color:#fff;font-weight:600;min-height:48px}.btn.alt{background:var(--card);color:var(--acc);border:1.5px solid var(--acc)}.btn.bad{background:none;color:var(--bad);border:1.5px solid var(--bad)}.btn:disabled{opacity:.5}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+label.f{display:block;font-size:14px;color:var(--mut);margin:12px 0 6px}
+input.t,textarea.t{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--card);min-height:48px}input.t:focus,textarea.t:focus{border-color:var(--acc);outline:none}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.chips::-webkit-scrollbar{display:none}.chips.wrap{flex-wrap:wrap;overflow:visible}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:9px 14px;min-height:42px;white-space:nowrap}.chip.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}.chip.sq{min-width:44px;padding:9px 0;text-align:center;border-radius:10px}
+.prev{width:100%;max-height:32vh;object-fit:contain;border-radius:10px;background:#0002;display:block}
+.sticky{position:sticky;bottom:calc(62px + env(safe-area-inset-bottom));display:flex;gap:8px;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;margin-top:8px}.sticky .btn{flex:1}
+.rec{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}.rec .btn{min-height:44px;padding:8px 14px}.rec.on .recb{background:var(--bad)}audio{height:40px;max-width:100%}
+.grp{margin:14px 0 6px;font-weight:700;display:flex;justify-content:space-between;color:var(--mut)}
+.item{display:flex;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:8px;margin-bottom:8px;width:100%;text-align:left}
+.item img{width:88px;height:88px;object-fit:cover;border-radius:8px;flex:none;background:var(--line)}.item b{font-size:15px}.item .m{font-size:13px;color:var(--mut)}
+.note{font-size:13px;color:var(--mut)}.msg{position:fixed;left:12px;right:12px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:9;background:#222;color:#fff;border-radius:10px;padding:12px 14px;display:none}.msg.on{display:block}
+.olist button{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px}.olist button.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--accbg)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}.kv span{color:var(--mut)}
+.cnt{background:var(--accbg);color:var(--acc);border-radius:999px;padding:1px 8px;font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+<header><button class="on" id="hdr" aria-label="Выбрать объект"><b id="hn">Фотофиксация</b><small id="hs"></small></button></header>
+<main id="m"></main>
+<nav id="nav"></nav>
+<div class="msg" id="msg" role="status"></div>
+<input type="file" id="cam" accept="image/*" capture="environment" hidden>
+<input type="file" id="gal" accept="image/*" multiple hidden>
+<script>
+"use strict";
+// ---------- данные ----------
+const STRUCT=["Фундамент","Стена наружная","Стена внутренняя","Простенок","Перемычка","Колонна","Ригель, балка","Плита перекрытия","Плита покрытия","Ферма","Лестница","Балкон, лоджия","Кровля","Фасад","Перегородка","Подвал","Отмостка","Стык панелей"];
+const DEF=["Общий вид","Трещина","Скол, отслоение бетона","Оголение арматуры","Коррозия арматуры","Коррозия металла","Прогиб","Выпучивание","Отклонение от вертикали","Смещение, сдвиг","Замачивание, протечки","Высолы","Выветривание раствора","Разрушение кладки","Отслоение штукатурки","Гниль, поражение древесины","Механическое повреждение","Отсутствие элемента"];
+const LET="А Б В Г Д Е Ж И К Л М Н П Р С Т".split(" "),NUM=Array.from({length:24},(_,i)=>String(i+1)),FLR=["Подвал","1","2","3","4","5","6","7","8","9","10","Чердак","Кровля"];
+const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+let DB,S={view:"shot",cur:"",objs:[],photos:[],edit:null,queue:[],rec:null},LAST={};
+try{LAST=JSON.parse(localStorage.getItem("ff_last")||"{}")}catch(e){}
+function idb(){return new Promise((res,rej)=>{const q=indexedDB.open("fotofix",1);q.onupgradeneeded=()=>{const d=q.result;d.createObjectStore("obj",{keyPath:"id"});const p=d.createObjectStore("photo",{keyPath:"id"});p.createIndex("oid","oid");d.createObjectStore("blob")};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+function tx(st,mode,fn){return new Promise((res,rej)=>{const t=DB.transaction(st,mode);let r;const o=fn(Array.isArray(st)?st.map(x=>t.objectStore(x)):t.objectStore(st));t.oncomplete=()=>res(o&&o.result!==undefined?o.result:o);t.onerror=()=>rej(t.error)})}
+const getAll=(st,idx,key)=>tx(st,"readonly",s=>idx?s.index(idx).getAll(key):s.getAll());
+async function load(){S.objs=await getAll("obj");S.objs.sort((a,b)=>String(b.t).localeCompare(String(a.t)));S.cur=localStorage.getItem("ff_cur")||"";if(!S.objs.some(o=>o.id===S.cur))S.cur=S.objs[0]?S.objs[0].id:"";await loadPhotos()}
+async function loadPhotos(){S.photos=S.cur?await getAll("photo","oid",S.cur):[];S.photos.sort((a,b)=>a.n-b.n)}
+const obj=()=>S.objs.find(o=>o.id===S.cur);
+function msg(t){const m=$("#msg");m.textContent=t;m.classList.add("on");clearTimeout(m._t);m._t=setTimeout(()=>m.classList.remove("on"),3200)}
+const urls=new Map();async function thumb(pid){if(urls.has(pid))return urls.get(pid);const b=await tx("blob","readonly",s=>s.get(pid));const u=b?URL.createObjectURL(b):"";urls.set(pid,u);return u}
+async function fillImgs(){for(const im of document.querySelectorAll("img[data-pid]:not([src])")){const u=await thumb(im.dataset.pid);if(u)im.src=u}}
+// ---------- сжатие фото ----------
+function shrink(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const m=2000,s=Math.min(1,m/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.round(im.naturalWidth*s),h=Math.round(im.naturalHeight*s);const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);URL.revokeObjectURL(u);c.toBlob(b=>b?res({b,w,h}):rej(new Error("не удалось сжать")),"image/jpeg",0.85)};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("не читается"))};im.src=u})}
+// ---------- шапка и меню ----------
+const IC={shot:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="4"/>',list:'<path d="M4 6h16M4 12h16M4 18h10"/>',send:'<path d="M4 12l16-8-6 16-3-7z"/>',obj:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',gal:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>'};
+const svg=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>`;
+function chrome(){const o=obj();$("#hn").textContent=o?o.name:"Фотофиксация";$("#hs").textContent=o?`Фото: ${S.photos.length} · сменить объект`:"Создайте объект";
+ $("#nav").innerHTML=[["shot","Съемка"],["list","Фото"],["send","Передать"],["objs","Объекты"]].map(([k,t])=>`<button data-nav="${k}" class="${S.view===k?"on":""}">${svg(k==="objs"?"obj":k)}${t}</button>`).join("")}
+// ---------- экраны ----------
+function render(){chrome();const m=$("#m");
+ if(!obj()&&S.view!=="objs"){S.view="objs"}
+ if(S.edit){m.innerHTML=formHtml();return}
+ if(S.view==="objs")m.innerHTML=objsHtml();else if(S.view==="list")m.innerHTML=listHtml();else if(S.view==="send")m.innerHTML=sendHtml();else m.innerHTML=shotHtml();
+ fillImgs()}
+function shotHtml(){const last=S.photos.slice(-3).reverse();return `<div class="big"><button id="b-cam">${svg("shot")}Снять</button><button class="alt" id="b-gal">${svg("gal")}Из галереи</button></div>
+<p class="note">После снимка выберите конструкцию, оси и дефект, при желании наговорите описание. Конструкция, оси и этаж запоминаются для следующего снимка.</p>
+${last.length?`<h3>Последние</h3>${last.map(itemHtml).join("")}`:""}`}
+function itemHtml(p){return `<button class="item" data-edit="${p.id}"><img data-pid="${p.id}" alt=""><div><b>№ ${p.n}. ${esc(p.struct||"конструкция не выбрана")}${p.mark?" "+esc(p.mark):""}</b><div class="m">${[p.axes?"оси "+p.axes:"",p.floor?(/^\d+$/.test(p.floor)?p.floor+" этаж":p.floor):"",p.defect||"",p.crack?"ширина "+p.crack+" мм":""].filter(Boolean).map(esc).join(" · ")}</div>${p.note?`<div class="m">${esc(p.note.slice(0,90))}</div>`:""}${p.audio?`<div class="m">${svg("mic").replace('<svg','<svg width="14" height="14"')} голосовая запись</div>`:""}</div></button>`}
+function listHtml(){if(!S.photos.length)return `<div class="card"><p>Фото пока нет. Нажмите «Съемка».</p></div>`;const g={};S.photos.forEach(p=>{(g[p.struct||"Без конструкции"]=g[p.struct||"Без конструкции"]||[]).push(p)});
+ return Object.entries(g).map(([k,a])=>`<div class="grp"><span>${esc(k)}</span><span class="cnt">${a.length}</span></div>${a.map(itemHtml).join("")}`).join("")}
+function sendHtml(){const o=obj(),n=S.photos.length,na=S.photos.filter(p=>p.audio).length,nn=S.photos.filter(p=>!p.struct).length;
+ return `<div class="card"><h2>Передать в офис</h2><div class="kv"><span>Объект</span><b>${esc(o.name)}</b><span>Фото</span><b>${n}</b><span>Голосовых записей</span><b>${na}</b>${nn?`<span>Без конструкции</span><b>${nn}</b>`:""}</div>
+<p class="note">Соберется один файл ZIP: фото, голосовые записи и таблица (CSV для Excel и файл для «Справочника обследователя»). Отправьте его себе в мессенджер, на почту или в облако. В справочнике: страница объекта, раздел «Фото», кнопка «Загрузить с телефона».</p>
+<div class="row"><button class="btn" id="b-share" ${n?"":"disabled"}>Отправить файл</button><button class="btn alt" id="b-dl" ${n?"":"disabled"}>Сохранить файл</button></div>
+<p class="note">После передачи фото остаются на телефоне. Удалить их можно на вкладке «Объекты».</p></div>`}
+function objsHtml(){return `<div class="card"><h2>Новый объект</h2><input class="t" id="o-new" placeholder="Адрес или название, например: Школа № 5, ул. Ерубаева, 12" autocomplete="off" enterkeyhint="done"><div class="row" style="margin-top:8px"><button class="btn" id="b-onew">Создать</button></div></div>
+${S.objs.length?`<div class="card olist"><h3>Объекты на этом телефоне</h3>${S.objs.map(o=>`<button data-obj="${o.id}" class="${o.id===S.cur?"on":""}"><b>${esc(o.name)}</b><br><span class="note">создан ${new Date(o.created).toLocaleDateString("ru-RU")}</span></button>`).join("")}</div>
+${obj()?`<div class="card"><h3>Текущий объект</h3><div class="row"><button class="btn alt" id="b-oren">Переименовать</button><button class="btn bad" id="b-odel">Удалить с телефона</button></div></div>`:""}`:""}
+<p class="note">Данные хранятся только на этом телефоне и работают без интернета. Чтобы добавить приложение на главный экран: меню браузера, «Добавить на главный экран» или «Установить приложение».</p>`}
+// ---------- форма снимка ----------
+function newEdit(file,b,w,h){const keep=LAST[S.cur]||{};return{id:uid(),isNew:true,blob:b,w,h,struct:keep.struct||"",mark:keep.mark||"",axes:keep.axes||"",floor:keep.floor||"",defect:"",crack:"",note:"",audio:null,audioNew:null,url:URL.createObjectURL(b)}}
+function chipRow(name,list,val,wrap,sq){return `<div class="chips${wrap?" wrap":""}">${list.map(x=>`<button class="chip${sq?" sq":""}${x===val?" on":""}" data-c="${name}" data-v="${esc(x)}">${esc(x)}</button>`).join("")}</div>`}
+function axChips(name,list,sel){return `<div class="chips">${list.map(x=>`<button class="chip sq${sel.includes(x)?" on":""}" data-c="${name}" data-v="${x}">${x}</button>`).join("")}</div>`}
+function axParts(a){const m=String(a||"").split("/");return{l:(m[0]||"").split("-").filter(Boolean),n:(m[1]||"").split("-").filter(Boolean)}}
+function formHtml(){const e=S.edit,recent=(LAST.structs||[]).filter(x=>x),sl=[...new Set([e.struct,...recent,...STRUCT].filter(Boolean))],ax=axParts(e.axes);
+ const q=S.queue.length?` · еще ${S.queue.length} из галереи`:"";
+ return `<img class="prev" src="${e.url||""}" ${e.url?"":`data-pid="${e.id}"`} alt="">
+<div class="note" style="margin-top:4px">${e.isNew?"Новый снимок":"№ "+e.n}${q}</div>
+<label class="f">Конструкция</label>${chipRow("struct",sl,e.struct)}<input class="t" id="f-struct" value="${esc(sl.includes(e.struct)&&STRUCT.includes(e.struct)?"":e.struct)}" placeholder="или впишите свою" enterkeyhint="next">
+<label class="f">Марка или номер элемента (необязательно)</label><input class="t" id="f-mark" value="${esc(e.mark)}" placeholder="К-3, Б-12, ПК 60.15" enterkeyhint="next">
+<label class="f">Оси: буквы и цифры (второе нажатие дает диапазон)</label>${axChips("axl",LET,ax.l)}${axChips("axn",NUM,ax.n)}
+<input class="t" id="f-axes" value="${esc(e.axes)}" placeholder="А-Б/3-4" enterkeyhint="next">
+<label class="f">Этаж</label>${chipRow("floor",FLR,e.floor)}
+<label class="f">Дефект</label>${chipRow("defect",DEF,e.defect,true)}<input class="t" id="f-defect" value="${esc(DEF.includes(e.defect)?"":e.defect)}" placeholder="или впишите свой" enterkeyhint="next">
+${e.defect==="Трещина"?`<label class="f">Ширина раскрытия, мм</label><input class="t" id="f-crack" inputmode="decimal" value="${esc(e.crack)}" placeholder="0,3">`:""}
+<label class="f">Что изображено (можно диктовать: микрофон на клавиатуре)</label><textarea class="t" id="f-note" rows="3" placeholder="Например: наклонная трещина у опоры, раскрытие растет к низу">${esc(e.note)}</textarea>
+<div class="rec${S.rec?" on":""}" id="rec">${recHtml()}</div>
+<div class="sticky">${e.isNew?`<button class="btn" id="f-save">Сохранить</button><button class="btn alt" id="f-next">${S.queue.length?"Сохранить, следующее":"Сохранить и снять еще"}</button>`:`<button class="btn" id="f-save">Сохранить</button><button class="btn bad" id="f-del">Удалить</button>`}</div>
+<div class="row"><button class="btn alt" id="f-cancel" style="width:100%">${e.isNew?"Не сохранять снимок":"Назад без изменений"}</button></div>`}
+function recHtml(){const e=S.edit;if(S.rec)return `<button class="btn recb" id="r-stop">■ Остановить запись</button><span id="r-time">0:00</span>`;
+ const a=e.audioNew||e.audio;return `<button class="btn alt" id="r-start">${svg("mic").replace("<svg",'<svg width="18" height="18"')} ${a?"Записать заново":"Записать голос"}</button>${a?`<audio controls src="${e.audioUrl||""}" id="r-play"></audio><button class="btn bad" id="r-del">✕</button>`:""}`}
+function readForm(){const e=S.edit;const v=id=>{const x=document.getElementById(id);return x?x.value.trim():null};
+ const st=v("f-struct");if(st)e.struct=st;const mk=v("f-mark");if(mk!==null)e.mark=mk;const ax=v("f-axes");if(ax!==null)e.axes=ax;const df=v("f-defect");if(df)e.defect=df;const cr=v("f-crack");if(cr!==null)e.crack=cr;const nt=v("f-note");if(nt!==null)e.note=nt}
+async function saveEdit(){readForm();const e=S.edit;if(S.rec)await stopRec();
+ const rec={id:e.id,oid:S.cur,n:e.n||((S.photos.reduce((a,p)=>Math.max(a,p.n),0))+1),t:e.t||new Date().toISOString(),struct:e.struct,mark:e.mark,axes:e.axes,floor:e.floor,defect:e.defect,crack:e.crack,note:e.note,w:e.w,h:e.h,audio:e.audio};
+ if(e.audioDel&&!e.audioNew)rec.audio=null;if(e.audioNew)rec.audio=e.audioNew.type||"audio/webm";
+ await tx(["photo","blob"],"readwrite",([p,b])=>{p.put(rec);if(e.blob)b.put(e.blob,e.id);if(e.audioNew)b.put(e.audioNew,e.id+".a");else if(e.audioDel)b.delete(e.id+".a")});
+ if(e.blob){urls.delete(e.id)}
+ LAST[S.cur]={struct:e.struct,mark:e.mark,axes:e.axes,floor:e.floor};LAST.structs=[e.struct,...(LAST.structs||[]).filter(x=>x!==e.struct)].filter(Boolean).slice(0,6);localStorage.setItem("ff_last",JSON.stringify(LAST));
+ const o=obj();o.t=new Date().toISOString();await tx("obj","readwrite",s=>s.put(o));
+ await loadPhotos();msg(`Сохранено: № ${rec.n}`);if(e.url)URL.revokeObjectURL(e.url);if(e.audioUrl)URL.revokeObjectURL(e.audioUrl);S.edit=null}
+// ---------- голос ----------
+let MR=null,chunks=[],t0=0,tt=0;
+async function startRec(){try{const st=await navigator.mediaDevices.getUserMedia({audio:true});const types=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/aac"];const mt=types.find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||"";
+  MR=new MediaRecorder(st,mt?{mimeType:mt}:{});chunks=[];MR.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};MR.start();S.rec=true;t0=Date.now();readForm();$("#rec").outerHTML=`<div class="rec on" id="rec">${recHtml()}</div>`;
+  tt=setInterval(()=>{const s=Math.round((Date.now()-t0)/1000),x=document.getElementById("r-time");if(x)x.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0")},500)}
+ catch(e){msg("Микрофон недоступен: разрешите доступ к микрофону для этой страницы.")}}
+function stopRec(){return new Promise(res=>{if(!MR){S.rec=null;return res()}MR.onstop=()=>{const b=new Blob(chunks,{type:MR.mimeType||"audio/webm"});MR.stream.getTracks().forEach(t=>t.stop());MR=null;clearInterval(tt);S.rec=null;const e=S.edit;if(e){e.audioNew=b;if(e.audioUrl)URL.revokeObjectURL(e.audioUrl);e.audioUrl=URL.createObjectURL(b);e.audioDel=false}res()};MR.stop()})}
+// ---------- ZIP ----------
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(d){let c=0xFFFFFFFF;for(let i=0;i<d.length;i++)c=CRC[(c^d[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+function zip(files){const enc=new TextEncoder(),parts=[],cen=[];let off=0;const le=(n,b)=>{const a=new Uint8Array(b);for(let i=0;i<b;i++)a[i]=(n>>>(8*i))&255;return a};
+ for(const[name,data0]of files){const nm=enc.encode(name),data=typeof data0==="string"?enc.encode(data0):data0,crc=crc32(data);
+  const lh=[le(0x04034b50,4),le(20,2),le(0x0800,2),le(0,2),le(0,2),le(0,2),le(crc,4),le(data.length,4),le(data.length,4),le(nm.length,2),le(0,2),nm,data];
+  cen.push(le(0x02014b50,4),le(20,2),le(20,2),le(0x0800,2),le(0,2),le(0,2),le(0,2),le(crc,4),le(data.length,4),le(data.length,4),le(nm.length,2),le(0,2),le(0,2),le(0,2),le(0,2),le(0,4),le(off,4),nm);
+  for(const p of lh){parts.push(p);off+=p.length}}
+ const cs=cen.reduce((a,p)=>a+p.length,0);return new Blob([...parts,...cen,le(0x06054b50,4),le(0,2),le(0,2),le(files.length,2),le(files.length,2),le(cs,4),le(off,4),le(0,2)],{type:"application/zip"})}
+const ext=t=>/mp4|aac|m4a/.test(t||"")?"m4a":/ogg/.test(t||"")?"ogg":"webm";
+async function buildZip(){const o=obj(),files=[],rows=[];const n4=n=>String(n).padStart(4,"0");
+ for(const p of S.photos){const b=await tx("blob","readonly",s=>s.get(p.id));if(!b)continue;const f=`foto/${n4(p.n)}.jpg`;files.push([f,new Uint8Array(await b.arrayBuffer())]);let af="";
+  if(p.audio){const a=await tx("blob","readonly",s=>s.get(p.id+".a"));if(a){af=`audio/${n4(p.n)}.${ext(p.audio)}`;files.push([af,new Uint8Array(await a.arrayBuffer())])}}
+  rows.push(Object.assign({},p,{file:f,audioFile:af}))}
+ const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+ const csv="﻿"+["№;Файл;Конструкция;Марка;Оси;Этаж;Дефект;Ширина трещины, мм;Описание;Голосовая запись;Дата и время",...rows.map(r=>[r.n,r.file,r.struct,r.mark,r.axes,r.floor,r.defect,r.crack,r.note,r.audioFile,new Date(r.t).toLocaleString("ru-RU")].map(q).join(";"))].join("\r\n");
+ files.push(["перечень фото.csv",csv]);
+ files.push(["fotofix.json",JSON.stringify({app:"Фотофиксация обследования",kind:"fotofix",v:1,saved:new Date().toISOString(),obj:{id:o.id,name:o.name,created:o.created},photos:rows.map(r=>({id:r.id,n:r.n,t:r.t,struct:r.struct,mark:r.mark,axes:r.axes,floor:r.floor,defect:r.defect,crack:r.crack,note:r.note,w:r.w,h:r.h,file:r.file,audio:r.audioFile,audioType:r.audio||""}))},null,1)]);
+ const d=new Date(),nm=`Фотофиксация ${o.name.replace(/[\\/:*?"<>|]/g," ").trim().slice(0,50)} ${d.toLocaleDateString("ru-RU")}.zip`;return{blob:zip(files),name:nm}}
+// ---------- события ----------
+document.addEventListener("click",async ev=>{const t=ev.target.closest("button");if(!t)return;const id=t.id;
+ if(t.dataset.nav){if(S.edit&&!confirm("Выйти без сохранения снимка?"))return;if(S.edit){if(S.rec)await stopRec();S.edit=null;S.queue=[]}S.view=t.dataset.nav;render();return}
+ if(id==="hdr"){if(S.edit)return;S.view="objs";render();return}
+ if(id==="b-cam"){$("#cam").click();return}if(id==="b-gal"){$("#gal").click();return}
+ if(id==="b-onew"){const nm=$("#o-new").value.trim();if(!nm){$("#o-new").focus();return}const o={id:uid(),name:nm,created:new Date().toISOString(),t:new Date().toISOString()};await tx("obj","readwrite",s=>s.put(o));S.objs.unshift(o);S.cur=o.id;localStorage.setItem("ff_cur",o.id);await loadPhotos();S.view="shot";render();msg("Объект создан");return}
+ if(t.dataset.obj){S.cur=t.dataset.obj;localStorage.setItem("ff_cur",S.cur);await loadPhotos();S.view="shot";render();return}
+ if(id==="b-oren"){const o=obj(),nm=prompt("Название объекта",o.name);if(nm&&nm.trim()){o.name=nm.trim();await tx("obj","readwrite",s=>s.put(o));render()}return}
+ if(id==="b-odel"){const o=obj();if(!confirm(`Удалить объект «${o.name}» и все его фото (${S.photos.length}) с телефона?\n\nПередали ли вы файл в офис?`))return;
+  await tx(["obj","photo","blob"],"readwrite",([a,p,b])=>{a.delete(o.id);S.photos.forEach(x=>{p.delete(x.id);b.delete(x.id);b.delete(x.id+".a")})});S.objs=S.objs.filter(x=>x.id!==o.id);S.cur=S.objs[0]?S.objs[0].id:"";localStorage.setItem("ff_cur",S.cur);await loadPhotos();render();msg("Объект удален");return}
+ if(t.dataset.edit){const p=S.photos.find(x=>x.id===t.dataset.edit);S.edit=Object.assign({},p,{isNew:false});if(p.audio){const a=await tx("blob","readonly",s=>s.get(p.id+".a"));if(a)S.edit.audioUrl=URL.createObjectURL(a)}S.edit.url=await thumb(p.id);render();window.scrollTo(0,0);return}
+ if(t.dataset.c){const e=S.edit;readForm();const v=t.dataset.v,c=t.dataset.c;
+  if(c==="struct"){if(e.struct!==v)e.mark="";e.struct=e.struct===v?"":v}else if(c==="floor"){e.floor=e.floor===v?"":v}else if(c==="defect"){e.defect=e.defect===v?"":v;if(v!=="Трещина")e.crack=""}
+  else{const a=axParts(e.axes),k=c==="axl"?"l":"n";let arr=a[k];if(arr.length===1&&arr[0]!==v)arr=[arr[0],v];else if(arr.length===1&&arr[0]===v)arr=[];else arr=[v];a[k]=arr;e.axes=(a.l.join("-")||"")+(a.n.length?"/"+a.n.join("-"):"")}
+  const y=window.scrollY;render();window.scrollTo(0,y);if(c==="defect"&&v==="Трещина"){const x=$("#f-crack");if(x)x.focus()}return}
+ if(id==="r-start"){startRec();return}
+ if(id==="r-stop"){await stopRec();readForm();$("#rec").outerHTML=`<div class="rec" id="rec">${recHtml()}</div>`;return}
+ if(id==="r-del"){const e=S.edit;e.audioNew=null;e.audioDel=true;e.audio=null;$("#rec").outerHTML=`<div class="rec" id="rec">${recHtml()}</div>`;return}
+ if(id==="f-save"||id==="f-next"){await saveEdit();if(S.queue.length){await nextQueued();return}if(id==="f-next"){render();$("#cam").click();return}S.view=S.view==="list"?"list":"shot";render();window.scrollTo(0,0);return}
+ if(id==="f-del"){const e=S.edit;if(!confirm(`Удалить фото № ${e.n}?`))return;await tx(["photo","blob"],"readwrite",([p,b])=>{p.delete(e.id);b.delete(e.id);b.delete(e.id+".a")});urls.delete(e.id);S.edit=null;await loadPhotos();render();msg("Фото удалено");return}
+ if(id==="f-cancel"){if(S.rec)await stopRec();const e=S.edit;if(e&&e.isNew&&e.url)URL.revokeObjectURL(e.url);S.edit=null;if(S.queue.length){await nextQueued();return}render();return}
+ if(id==="b-share"||id==="b-dl"){t.disabled=true;msg("Собираю файл…");try{const{blob,name}=await buildZip();const f=new File([blob],name,{type:"application/zip"});
+  if(id==="b-share"&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name})}else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);msg("Файл сохранен в загрузки")}}
+  catch(e){if(e&&e.name!=="AbortError")msg("Не удалось: "+(e.message||e))}t.disabled=false;return}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="o-new"){e.preventDefault();$("#b-onew").click()}});
+async function startEdit(file){try{const{b,w,h}=await shrink(file);S.edit=newEdit(file,b,w,h);render();window.scrollTo(0,0)}catch(e){msg("Не удалось открыть фото: "+e.message)}}
+async function nextQueued(){const f=S.queue.shift();await startEdit(f)}
+$("#cam").addEventListener("change",async e=>{const f=e.target.files[0];e.target.value="";if(f)await startEdit(f)});
+$("#gal").addEventListener("change",async e=>{const fs=[...e.target.files];e.target.value="";if(!fs.length)return;S.queue=fs.slice(1);await startEdit(fs[0])});
+window.addEventListener("beforeunload",e=>{if(S.edit&&S.edit.isNew){e.preventDefault();e.returnValue=""}});
+(async()=>{try{DB=await idb()}catch(e){$("#m").innerHTML='<div class="card"><p>Браузер не дает хранить данные (возможно, приватный режим). Откройте страницу в обычном окне.</p></div>';return}
+ if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+ await load();if(!obj())S.view="objs";render();
+ if("serviceWorker"in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("sw.js").catch(()=>{})})();
+</script>
+</body>
+</html>
